@@ -46,5 +46,8 @@
     "url": "https://github.com/victororozco/stori-card/issues"
   },
   "homepage": "https://github.com/victororozco/stori-card/#readme",
-  "type": "module"
+  "type": "module",
+  "engines": {
+    "node": "16.14.2"
+  }
 }
