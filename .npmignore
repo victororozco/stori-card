@@ -1,0 +1,8 @@
+test
+.vscode
+pipeline.yaml
+jest.config.json
+jest.setup.js
+README.md
+*.env.*
+coverage

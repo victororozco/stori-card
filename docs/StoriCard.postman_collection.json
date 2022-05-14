@@ -1,0 +1,108 @@
+{
+	"info": {
+		"_postman_id": "3d98fc06-bc5c-4d04-82ec-dd2dbd8a6048",
+		"name": "StoriCard",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Transactions",
+			"item": [
+				{
+					"name": "Process transaction file",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "file",
+									"type": "file",
+									"src": "/Users/victororozco/Documents/code/stori-card/transactions.csv"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{domain}}/api/{{version}}/transactions/{{accountId}}",
+							"host": [
+								"{{domain}}"
+							],
+							"path": [
+								"api",
+								"{{version}}",
+								"transactions",
+								"{{accountId}}"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Accounts",
+			"item": [
+				{
+					"name": "New Account",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var jsonData = JSON.parse(responseBody);",
+									"postman.setEnvironmentVariable(\"accountId\", jsonData.data._id);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"id\": 4,\n    \"firstName\": \"Erika\",\n    \"lastName\": \"Placencio\",\n    \"email\": \"enplacencio@gmaill.com\",\n    \"currency\": \"usd\",\n    \"balance\": 2000\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{domain}}/api/{{version}}/accounts",
+							"host": [
+								"{{domain}}"
+							],
+							"path": [
+								"api",
+								"{{version}}",
+								"accounts"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get all Accounts",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{domain}}/api/{{version}}/accounts",
+							"host": [
+								"{{domain}}"
+							],
+							"path": [
+								"api",
+								"{{version}}",
+								"accounts"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}

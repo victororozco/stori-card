@@ -1,0 +1,242 @@
+openapi: 3.0.0
+
+info:
+  title: 'StoriCard API'
+  description: |
+    This API was designed based on the *Google's API Design Guide*.
+  version: v1
+  contact:
+    name: Victor Orozco
+    email: vorozco.dev@gmail.com
+  license:
+      name: 'Apache 2.0'
+      url: 'https://www.apache.org/licenses/LICENSE-2.0.html'
+
+servers:
+  - description: local
+    url: http://localhost:3001/api/{apiVersion}
+    variables:
+      apiVersion:
+        default: 'v1'
+        description: API Version
+
+paths:
+  /accounts:
+    get:
+      operationId: getAllAccounts
+      summary: Get all accounts
+      tags:
+        - Accounts
+      responses:
+        '200':
+          description: Get all accounts
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetAllAccounts'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+        '500':
+          $ref: '#/components/responses/InternalError'
+
+    post:
+      operationId: createNewCustomer
+      summary: Create new account
+      tags:
+          - Accounts
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateAccount"
+      responses:
+          '201':
+              description: Created account
+              content:
+                application/json:
+                    schema:
+                        $ref: '#/components/schemas/CreatedAccount'
+          '401':
+            $ref: '#/components/responses/UnauthorizedError'
+          '404':
+            $ref: '#/components/responses/NotFoundError'
+          '500':
+            $ref: '#/components/responses/InternalError'
+
+  /transactions/{accountId}:
+    post:
+      operationId: createNewTransaction
+      summary: Create new Transactions
+      parameters:
+        - in: path
+          name: accountId
+          schema:
+            type: string
+          required: true
+      tags:
+          - Transactions
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              $ref: "#/components/schemas/CreateTransaction"
+      responses:
+          '201':
+              description: Created Account Type
+              content:
+                application/json:
+                    schema:
+                        $ref: '#/components/schemas/CreatedTransactions'
+          '401':
+            $ref: '#/components/responses/UnauthorizedError'
+          '404':
+            $ref: '#/components/responses/NotFoundError'
+          '500':
+            $ref: '#/components/responses/InternalError'
+  
+components:
+  responses:
+    InternalError:
+      description: Internal error
+      content:
+        application/json:
+          schema:
+              $ref: '#/components/schemas/Error'
+
+    UnauthorizedError:
+      description: 'Access token is missing or invalid'
+      content:
+          application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    
+    ForbiddenError:
+      description: Forbiden Operation
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    
+    NotFoundError:
+      description: Not found
+      content:
+        application/json:
+          schema:
+              $ref: '#/components/schemas/Error'
+
+  schemas:
+    Error:
+      type: object
+      required:
+        - message
+        - errorDetail
+        - messageWithCode
+      properties:
+        message:
+          type: string
+        errorDetail:
+          type: string
+        messageWithCode:
+          type: string
+        errorCode:
+          type: string
+        type:
+          type: string
+          enum: ["error", "warning"]
+
+    Accounts:
+      properties:
+        _id:
+          type: string
+          example: "89b3c2e5219a8549300d4f32"
+          description: Mongo ObjectId
+        firsName:
+          type: string
+          example: "Francisco"
+        lastName:
+          type: string
+          example: "Perez"
+        email:
+          type: string
+          format: email
+        balance:
+          type: number
+          example: 1200
+        currency:
+          type: string
+          pattern: /^([a-z]{3})$/
+          enum: [usd, eur, dop, mxn, hnl]
+          default: usd
+          description: Currencies based on ISO 4217
+
+    GetAllAccounts:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/Accounts'
+
+    CreateAccount:
+      type: object
+      properties:
+        firsName:
+          type: string
+          example: "Francisco"
+        lastName:
+          type: string
+          example: "Perez"
+        email:
+          type: string
+          format: email
+        balance:
+          type: number
+          example: 1200
+        currency:
+          type: string
+          pattern: /^([a-z]{3})$/
+          enum: [usd, eur, dop, mxn, hnl]
+          default: usd
+          description: Currencies based on ISO 4217
+
+    CreatedAccount:
+      type: object
+      properties:
+        data:
+          $ref: '#/components/schemas/Accounts'
+
+    CreateTransaction:
+      type: object
+      properties:
+        file:
+          type: string
+          format: binary
+
+    CreatedTransactions:
+      type: object
+      properties:
+        data:
+          type: object
+          properties:
+            account:
+              $ref: '#/components/schemas/Accounts'
+            transactions:
+              type: object
+              properties:
+                creditAmount:
+                  type: number
+                  example: 1200
+                debitAmount:
+                  type: number
+                  example: -100
+                balance:
+                  type: number
+                  example: 1100
+                monthBalance:
+                  type: object
+                  example:
+                    "Jul": 2
+                    "Aug": 3
+
