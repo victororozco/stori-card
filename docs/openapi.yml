@@ -13,6 +13,13 @@ info:
       url: 'https://www.apache.org/licenses/LICENSE-2.0.html'
 
 servers:
+  - description: HerokuServer
+    url: https://vast-gorge-02819.herokuapp.com/api/{apiVersion}
+    variables:
+      apiVersion:
+        default: 'v1'
+        description: API Version
+
   - description: local
     url: http://localhost:3001/api/{apiVersion}
     variables:

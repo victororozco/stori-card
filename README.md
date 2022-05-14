@@ -13,6 +13,7 @@ instructions on how to execute the code.
 
 -----------------------------
 ## OpenAPI Documentation
+[View Heroku OpenAPI](https://vast-gorge-02819.herokuapp.com/docs/)
 
 ```bash
 http://{{domain}}/docs/
